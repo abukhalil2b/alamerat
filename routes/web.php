@@ -158,6 +158,8 @@ Route::prefix('student')->group(function () {
 	Route::get('{student}/{circle}/program_report/index', [StudentController::class,'programReportIndex'])->name('student.program_report.index');
 	Route::get('{student}/{circle}/transfer/create', [StudentController::class,'studentTransferCreate'])->name('student.transfer.create');
 	Route::post('{student}/{circle}/transfer/store', [StudentController::class,'studentTransferStore'])->name('student.transfer.store');
+
+	Route::post('{student}/{circle}/program_report/search', [StudentController::class,'programReportSearch'])->name('student.program_report.search');
 });	
 
 

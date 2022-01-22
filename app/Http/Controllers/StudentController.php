@@ -375,6 +375,42 @@ class StudentController extends Controller {
        return view('program_report.index',compact('programReports','circle','student')); 
     }
 
+
+	public function programReportSearch(Request $request,Student $student,Circle $circle)
+    {
+    	$dateFrom = $request->date_from;
+    	$dateTo = $request->date_to;
+
+        $programReports=[];
+// return $request->all();
+        $loggedUser = auth()->user();
+        if($loggedUser->userType==='teacher'){
+        	$teacher = $loggedUser->teacherAccount;
+            $teacher->checkHisStudent($student);
+            $programReports = ProgramReport::where(['circle_id'=>$circle->id,'student_id'=>$student->id])
+            ->whereBetween('donedate',[$dateFrom,$dateTo])
+            ->orderby('id','DESC')
+            ->paginate(50);
+        }elseif($loggedUser->userType==='usercenter'){
+            $loggedUser->checkUsercenterHasStudent($student);
+           	$programReports = ProgramReport::where(['circle_id'=>$circle->id,'student_id'=>$student->id])
+            ->whereBetween('donedate',[$dateFrom,$dateTo])
+            ->orderby('id','DESC')
+            ->paginate(50);
+        }elseif($loggedUser->userType==='supervisor'){
+            $supervisor = $loggedUser->supervisorAccount;
+            $supervisor->checkSupervisorHasStudent($student);
+            $programReports = ProgramReport::where(['circle_id'=>$circle->id,'student_id'=>$student->id])
+            ->orderby('id','DESC')
+            ->paginate(50);
+        }else{
+            abort(401);
+        }
+        
+       return view('program_report.index',compact('programReports','circle','student')); 
+    }
+
+
     public function studentTransferCreate(Student $student,Circle $circle)
     {
         $circles=[];

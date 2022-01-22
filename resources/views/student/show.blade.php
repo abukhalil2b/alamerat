@@ -48,6 +48,8 @@
 </div>
 @endif
 
+@include('student._search_report')
+
 @include('student._memorized_juz')
 @include('student._memorized_sowar')
 
